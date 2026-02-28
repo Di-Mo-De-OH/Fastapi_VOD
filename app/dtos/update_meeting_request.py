@@ -13,7 +13,7 @@ class UpdateMeetingDateRangeRequest(BaseModel):
     end_date: date
 
     def exceeds_max_range(self) -> bool:
-        return self.end_date - self.start_date <= MEETING_DATE_MAX_RANGE
+        return self.end_date - self.start_date > MEETING_DATE_MAX_RANGE
 
 
 class UpdateMeetingTitleRequest(BaseModel):
