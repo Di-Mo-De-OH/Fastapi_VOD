@@ -1,0 +1,10 @@
+from pydantic import BaseModel
+
+from app.dtos.frozen_config import FROZEN_CONFIG
+
+
+class CreateParticipantRequestModel(BaseModel):
+    model_config = FROZEN_CONFIG
+
+    meeting_url: str
+    name: str
