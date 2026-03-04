@@ -6,7 +6,9 @@ from starlette.status import (
 )
 
 from app.dtos.create_meeting_response import CreateMeetingResponse
-from app.dtos.get_meeting_response import GetMeetingResponse
+from app.dtos.get_meeting_response import (
+    GetMeetingResponse,
+)
 from app.dtos.update_meeting_request import (
     MEETING_DATE_MAX_RANGE,
     UpdateMeetingDateRangeRequest,
@@ -40,13 +42,7 @@ async def api_get_meeting_mysql(meeting_url_code: str) -> GetMeetingResponse:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND, detail=f"meeting with url_code: {meeting_url_code} not found"
         )
-    return GetMeetingResponse(
-        url_code=meeting.url_code,
-        end_date=meeting.end_date,
-        start_date=meeting.start_date,
-        title=meeting.title,
-        location=meeting.location,
-    )
+    return GetMeetingResponse.from_mysql(meeting)
 
 
 @mysql_router.patch(
@@ -79,13 +75,7 @@ async def api_update_meeting_mysql(
         update_meeting_date_range_request.end_date,
     )
     assert meeting_after_update
-    return GetMeetingResponse(
-        url_code=meeting_after_update.url_code,
-        start_date=meeting_after_update.start_date,
-        end_date=meeting_after_update.end_date,
-        title=meeting_after_update.title,
-        location=meeting_after_update.location,
-    )
+    return GetMeetingResponse.from_mysql(meeting_after_update)
 
 
 @mysql_router.patch(

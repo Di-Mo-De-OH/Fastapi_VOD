@@ -6,5 +6,5 @@ from app.dtos.frozen_config import FROZEN_CONFIG
 class CreateParticipantRequestModel(BaseModel):
     model_config = FROZEN_CONFIG
 
-    meeting_url: str
+    meeting_url_code: str
     name: str

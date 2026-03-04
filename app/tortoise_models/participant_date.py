@@ -11,11 +11,12 @@ from app.tortoise_models.participant import ParticipantModel
 
 class ParticipantDateModel(BaseModel, Model):
     participant: fields.ForeignKeyRelation[ParticipantModel] = fields.ForeignKeyField(
-        model_name="models.ParticipantModel", related_name="participant_dates", db_constraint=False
+        model_name="models.ParticipantModel", related_name="participant_dates", db_constraint=False, index=True
     )
     date = fields.DateField()
     enabled = fields.BooleanField(default=True)
     started = fields.BooleanField(default=False)
+    participants: list[ParticipantModel]
 
     class Meta:
         table = "participant_dates"
@@ -32,3 +33,19 @@ class ParticipantDateModel(BaseModel, Model):
             .order_by("date")
             .all()
         )
+
+    @classmethod
+    async def on(cls, participant_date_id: int) -> None:
+        await cls.filter(id=participant_date_id).update(enabled=True)
+
+    @classmethod
+    async def off(cls, participant_date_id: int) -> None:
+        await cls.filter(id=participant_date_id).update(enabled=False, started=False)
+
+    @classmethod
+    async def star(cls, participant_date_id: int) -> None:
+        await cls.filter(id=participant_date_id).update(enabled=True, started=True)
+
+    @classmethod
+    async def unstar(cls, participant_date_id: int) -> None:
+        await cls.filter(id=participant_date_id).update(started=False)
